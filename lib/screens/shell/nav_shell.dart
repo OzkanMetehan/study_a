@@ -12,17 +12,30 @@ class NavShell extends StatefulWidget {
 }
 
 class _NavShellState extends State<NavShell> {
-  int _index = 0;
+  int _index = 2; // center tab (Home)
 
-  final _pages = const [
-    HomeScreen(),
-    LibraryScreen(),
-    CalendarScreen(),
-    AnalyticsScreen(),
-    ProfileScreen(),
-  ];
+  late final List<Widget> _pages;
 
-  Widget _navIcon(String name) => ImageIcon(AssetImage('assets/icons/' + name + '.png'));
+  static const double _baseIconSize = 24.0;
+  static const double _selectedIconSize = _baseIconSize * 1.15; // 15% larger when selected
+
+  Widget _navIcon(String name, {bool selected = false}) => ImageIcon(
+        AssetImage('assets/icons/' + name + '.png'),
+        size: selected ? _selectedIconSize : _baseIconSize,
+      );
+
+  @override
+  void initState() {
+    super.initState();
+    // Order MUST match NavigationDestination order below
+    _pages = [
+      const LibraryScreen(),
+      const CalendarScreen(),
+      const HomeScreen(),
+      const AnalyticsScreen(),
+      const ProfileScreen(),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,11 +45,31 @@ class _NavShellState extends State<NavShell> {
         selectedIndex: _index,
         onDestinationSelected: (i) => setState(() => _index = i),
         destinations: [
-          NavigationDestination(icon: _navIcon('home'), label: 'Home'),
-          NavigationDestination(icon: _navIcon('library'), label: 'Library'),
-          NavigationDestination(icon: _navIcon('calendar'), label: 'Calendar'),
-          NavigationDestination(icon: _navIcon('analytics'), label: 'Analytics'),
-          NavigationDestination(icon: _navIcon('profile'), label: 'Profile'),
+          NavigationDestination(
+            icon: _navIcon('library'),
+            selectedIcon: _navIcon('library', selected: true),
+            label: 'Library',
+          ),
+          NavigationDestination(
+            icon: _navIcon('calendar'),
+            selectedIcon: _navIcon('calendar', selected: true),
+            label: 'Calendar',
+          ),
+          NavigationDestination(
+            icon: _navIcon('home'),
+            selectedIcon: _navIcon('home', selected: true),
+            label: 'Home',
+          ),
+          NavigationDestination(
+            icon: _navIcon('analytics'),
+            selectedIcon: _navIcon('analytics', selected: true),
+            label: 'Analytics',
+          ),
+          NavigationDestination(
+            icon: _navIcon('profile'),
+            selectedIcon: _navIcon('profile', selected: true),
+            label: 'Profile',
+          ),
         ],
       ),
     );

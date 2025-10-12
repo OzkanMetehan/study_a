@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:study_a/screens/shell/nav_shell.dart';
+import 'package:study_a/screens/session_setup/session_setup_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -74,7 +74,11 @@ class HomeScreen extends StatelessWidget {
                 SizedBox(
                   width: double.infinity,
                   child: FilledButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => const SessionSetupScreen()),
+                      );
+                    },
                     child: const Padding(
                       padding: EdgeInsets.symmetric(vertical: 14),
                       child: Text('Start Studying', style: TextStyle(fontSize: 18)),
@@ -95,7 +99,6 @@ class HomeScreen extends StatelessWidget {
               ])),
             ],
           ),
-          bottomNavigationBar: const NavShellBottomStub(),
         ),
       ),
     );
@@ -125,19 +128,4 @@ Widget _subjectCard(String title, String time) {
   );
 }
 
-class NavShellBottomStub extends StatelessWidget {
-  const NavShellBottomStub({super.key});
-  @override
-  Widget build(BuildContext context) {
-    // Render a NavigationBar that doesn't change pages to avoid recursion.
-    return NavigationBar(
-      destinations: [
-        NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
-        NavigationDestination(icon: Icon(Icons.menu_book_outlined), label: 'Library'),
-        NavigationDestination(icon: Icon(Icons.calendar_month_outlined), label: 'Calendar'),
-        NavigationDestination(icon: Icon(Icons.query_stats_outlined), label: 'Analytics'),
-        NavigationDestination(icon: Icon(Icons.person_outline), label: 'Profile'),
-      ],
-    );
-  }
-}
+// Removed redundant bottom navigation stub that duplicated the app shell's bar
