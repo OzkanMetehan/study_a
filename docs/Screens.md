@@ -57,6 +57,73 @@ Attachments:
 Notes:
 - This is only an example block; replace with real screens.
 
+### LIBRARY 
+- Purpose: Monitoring and viewing the books that are owned and their progress as well as details/
+- Entry points: Through the `library` button on the bottom bar (the farthest left)
+- Exit points: Through the other buttons from the bar
+- Primary actions: Viewing books and seeing the details when clicking on them. Adding a new book.
+- Secondary actions: Filtering the books by subject, completion and alphabetic. Also seeing the books in `all` `completed` `whishlist` and `favorites` tabs
+- Data shown: Book cover images, names, completion percentages
+- Local state: 
+- Performance notes: 
+- Edge cases:
+
+Attachments:
+- (add screenshot here)
+
+Notes:
+- This is only an example block; replace with real screens.
+
+### CALENDAR 
+- Purpose: Seeing time specific details of sessions like for particular day/week/month or mondays/tuesdays etc
+- Entry points: Through the `calendar` button on the bottom bar 
+- Exit points: Through the other buttons from the bar
+- Primary actions: Changing the month at the top title/button with the chevrons on both of its sides, The day we tap will shown at the bottom as a details card with the details of the session(s) of that day. The days will be shown in a 7x5 grid with each day is a circular button with green tone according to the questions solved that day (heatmap) Under the calendar grid it'll be a legend for the icons and their meanings (sick day, rest day, streak is saved) and a toggle for turning on and off the question amount under each day. 
+- Secondary actions: At the bottom right, just above the bottom bar it'll be a warning pop op and if we tap on it it'll expand to the left and the neglected subjects will appear there
+- Data shown: Question Solved, Hours spent, wrong,empty,net,accuracy inside the details card
+- Local state: 
+- Performance notes: 
+- Edge cases:
+
+Attachments:
+- (add screenshot here)
+
+Notes:
+- This is only an example block; replace with real screens.
+
+### PROFILE 
+- Purpose: Seeing the details of the account with name, grade, title, total questions solved, total hours studies and amount of total sessions. As well as Badges, Preferences and Setting sections.
+- Entry points: Through the `profile` button on the bottom bar 
+- Exit points: Through the other buttons from the bar
+- Primary actions: Viewing the current badges owned. Changing the preferences and settings of the app
+- Secondary actions: Accesing the profile edit section with a button, Changing the color theme of the app. Exporting profile data with a button
+- Data shown: Name, Title, Grade, Total questions, hours and sessions
+- Local state: 
+- Performance notes: 
+- Edge cases:
+
+Attachments:
+- (add screenshot here)
+
+Notes:
+- This is only an example block; replace with real screens.
+
+### ANALYTICS 
+- Purpose: Seeing the statistics of the sessions in every possible detail.
+- Entry points: Through the `profile` button on the bottom bar 
+- Exit points: Through the other buttons from the bar
+- Primary actions: Viewing the current badges owned. Changing the preferences and settings of the app
+- Secondary actions: Accesing the profile edit section with a button, Changing the color theme of the app. Exporting profile data with a button
+- Data shown: Name, Title, Grade, Total questions, hours and sessions
+- Local state: 
+- Performance notes: 
+- Edge cases:
+
+Attachments:
+- (add screenshot here)
+
+Notes:
+- This is only an example block; replace with real screens.
 
 
 ### Example — Home (placeholder)

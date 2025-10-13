@@ -1,4 +1,12 @@
 ﻿import 'package:flutter/material.dart';
+import 'dart:math' as math;
+
+// Simple data model for a calendar day cell
+class _CalendarDay {
+  final int? day;
+  final bool isCurrentMonth;
+  const _CalendarDay(this.day, this.isCurrentMonth);
+}
 
 class CalendarScreen extends StatefulWidget {
   const CalendarScreen({super.key});
@@ -48,11 +56,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
               SingleChildScrollView(
                 child: Column(
                   children: [
-                    // Calendar Header
-                    _buildCalendarHeader(),
-                    
-                    // Monthly Progress
-                    _buildMonthlyProgress(),
+                  // Calendar Header (with month + progress)
+                  _buildCalendarHeader(),
                     
                     // Calendar Grid
                     _buildCalendarGrid(),
@@ -78,39 +83,94 @@ class _CalendarScreenState extends State<CalendarScreen> {
   Widget _buildCalendarHeader() {
     return Container(
       margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.symmetric(vertical: 12),
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
       decoration: BoxDecoration(
-        color: const Color(0xFF5F9EA0),
-        borderRadius: BorderRadius.circular(8),
+        color: Colors.white.withOpacity(0.8),
+        borderRadius: BorderRadius.circular(16),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
         children: [
-          IconButton(
-            onPressed: () {
-              setState(() {
-                _currentMonth = DateTime(_currentMonth.year, _currentMonth.month - 1);
-              });
-            },
-            icon: const Icon(Icons.chevron_left, color: Colors.white),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _headerChevron(onTap: () {
+                setState(() {
+                  _currentMonth = DateTime(_currentMonth.year, _currentMonth.month - 1);
+                });
+              }, isLeft: true),
+              Text(
+                _getMonthYearString(),
+                style: const TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xFF2D3748),
+                ),
+              ),
+              _headerChevron(onTap: () {
+                setState(() {
+                  _currentMonth = DateTime(_currentMonth.year, _currentMonth.month + 1);
+                });
+              }),
+            ],
           ),
-          Text(
-            _getMonthYearString(),
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: Colors.white,
-            ),
-          ),
-          IconButton(
-            onPressed: () {
-              setState(() {
-                _currentMonth = DateTime(_currentMonth.year, _currentMonth.month + 1);
-              });
-            },
-            icon: const Icon(Icons.chevron_right, color: Colors.white),
+          const SizedBox(height: 8),
+          // Progress text + bar centered under header
+          Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Text(
+                    'Solved, 3311 questions this month ',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Color(0xFF2D3748),
+                    ),
+                  ),
+                  Icon(Icons.flag, size: 14, color: Color(0xFF2D3748)),
+                ],
+              ),
+              const SizedBox(height: 6),
+              SizedBox(
+                width: 200,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(4),
+                  child: LinearProgressIndicator(
+                    value: 0.83,
+                    backgroundColor: Color(0xFFE2E8F0),
+                    valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF48BB78)),
+                    minHeight: 6,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 4),
+              const Text(
+                '689 away from target',
+                style: TextStyle(fontSize: 11, color: Color(0xFF718096)),
+              ),
+            ],
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _headerChevron({required VoidCallback onTap, bool isLeft = false}) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        width: 32,
+        height: 28,
+        decoration: BoxDecoration(
+          color: const Color(0xFFE6F3F4),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Icon(
+          isLeft ? Icons.chevron_left : Icons.chevron_right,
+          size: 20,
+          color: const Color(0xFF2D3748),
+        ),
       ),
     );
   }
@@ -158,40 +218,44 @@ class _CalendarScreenState extends State<CalendarScreen> {
     final calendarDays = _generateCalendarDays();
     
     return Container(
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.9),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
         children: [
-          // Week day headers
+          // Week day headers (aligned with week number column)
           Row(
-            children: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-                .map((day) => Expanded(
-                      child: Text(
-                        day,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFF2D3748),
-                        ),
-                      ),
-                    ))
-                .toList(),
+            children: [
+              const SizedBox(width: 38), // 30 (week number) + 8 (spacing)
+              Expanded(
+                child: Row(
+                  children: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                      .map((day) => Expanded(
+                            child: Text(
+                              day,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: Color(0xFF2D3748),
+                              ),
+                            ),
+                          ))
+                      .toList(),
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 12),
           
           // Calendar grid
           Column(
-            children: List.generate(6, (weekIndex) {
+            children: List.generate((calendarDays.length / 7).ceil(), (weekIndex) {
               final weekStart = weekIndex * 7;
-              final weekDays = List.generate(7, (dayIndex) {
-                final calculatedDayIndex = weekStart + dayIndex;
-                return calculatedDayIndex < calendarDays.length ? calendarDays[calculatedDayIndex] : null;
-              });
+              final weekDays = calendarDays.sublist(weekStart, math.min(weekStart + 7, calendarDays.length));
               return _buildCalendarWeek(weekDays, weekIndex == 0 ? 'W1' : weekIndex == 1 ? 'W2' : weekIndex == 2 ? 'W3' : weekIndex == 3 ? 'W4' : weekIndex == 4 ? 'W5' : '');
             }),
           ),
@@ -200,29 +264,40 @@ class _CalendarScreenState extends State<CalendarScreen> {
     );
   }
 
-  List<int?> _generateCalendarDays() {
+  List<_CalendarDay> _generateCalendarDays() {
     final firstDayOfMonth = DateTime(_currentMonth.year, _currentMonth.month, 1);
     final lastDayOfMonth = DateTime(_currentMonth.year, _currentMonth.month + 1, 0);
-    
-    // Calculate the starting day (Monday = 1, Sunday = 7, but we want Monday = 0)
+
+    // Monday-based index (Mon=0..Sun=6)
     final firstWeekday = (firstDayOfMonth.weekday - 1) % 7;
-    
-    final List<int?> days = [];
-    
-    // Add empty days for the beginning of the month
-    for (int i = 0; i < firstWeekday; i++) {
-      days.add(null);
+
+    final previousMonthLastDay = DateTime(_currentMonth.year, _currentMonth.month, 0).day;
+
+    final List<_CalendarDay> days = [];
+
+    // Leading days from previous month
+    for (int i = firstWeekday - 1; i >= 0; i--) {
+      days.add(_CalendarDay(previousMonthLastDay - i, false));
     }
-    
-    // Add all days of the month
+
+    // Current month days
     for (int day = 1; day <= lastDayOfMonth.day; day++) {
-      days.add(day);
+      days.add(_CalendarDay(day, true));
     }
-    
+
+    // Trailing days from next month to complete the last week
+    final remainder = days.length % 7;
+    if (remainder != 0) {
+      final needed = 7 - remainder;
+      for (int d = 1; d <= needed; d++) {
+        days.add(_CalendarDay(d, false));
+      }
+    }
+
     return days;
   }
 
-  Widget _buildCalendarWeek(List<int?> days, String weekNumber) {
+  Widget _buildCalendarWeek(List<_CalendarDay> days, String weekNumber) {
     return Row(
       children: [
         // Week number
@@ -243,7 +318,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
           child: Row(
             children: days.map((day) {
               return Expanded(
-                child: day != null ? _buildDayButton(day) : const SizedBox(height: 50),
+                child: _buildDayButton(day),
               );
             }).toList(),
           ),
@@ -252,9 +327,15 @@ class _CalendarScreenState extends State<CalendarScreen> {
     );
   }
 
-  Widget _buildDayButton(int day) {
-    final dayData = _calendarData[day];
-    final isSelected = day == _selectedDay;
+  Widget _buildDayButton(_CalendarDay calendarDay) {
+    final int? day = calendarDay.day;
+    final bool isCurrent = calendarDay.isCurrentMonth;
+    if (day == null) {
+      return const SizedBox(height: 44);
+    }
+
+    final dayData = isCurrent ? _calendarData[day] : null;
+    final isSelected = isCurrent && day == _selectedDay;
     
     Color backgroundColor;
     Color textColor = Colors.white;
@@ -291,35 +372,45 @@ class _CalendarScreenState extends State<CalendarScreen> {
     
     return GestureDetector(
       onTap: () {
-        setState(() {
-          _selectedDay = day;
-        });
+        if (isCurrent) {
+          setState(() {
+            _selectedDay = day;
+          });
+        }
       },
-      child: Container(
-        height: 50,
-        margin: const EdgeInsets.all(1),
-        decoration: BoxDecoration(
-          color: backgroundColor,
-          borderRadius: BorderRadius.circular(25),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              day.toString(),
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: textColor,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final double size = 44.0; // fixed square to ensure perfect circle
+          return Center(
+            child: Container(
+              width: size,
+              height: size,
+              margin: const EdgeInsets.all(1),
+              decoration: BoxDecoration(
+                color: isCurrent ? backgroundColor : Colors.grey[300]!.withOpacity(0.6),
+                shape: BoxShape.circle,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    day.toString(),
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: isCurrent ? textColor : const Color(0xFF718096),
+                    ),
+                  ),
+                  if (isCurrent && icon != null) ...[
+                    const SizedBox(height: 1),
+                    icon,
+                    const Text('>>', style: TextStyle(fontSize: 6, color: Colors.white)),
+                  ],
+                ],
               ),
             ),
-            if (icon != null) ...[
-              const SizedBox(height: 1),
-              icon,
-              const Text('>>', style: TextStyle(fontSize: 6, color: Colors.white)),
-            ],
-          ],
-        ),
+          );
+        },
       ),
     );
   }
