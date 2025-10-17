@@ -232,28 +232,21 @@ Widget _sortControls({
   required String sortBy,
   required ValueChanged<String> onChangeSort,
 }) {
-  return Container(
-    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(10),
-    ),
-    child: Row(
-      children: [
-        DropdownButton<String>(
-          value: sortBy,
-          underline: const SizedBox(),
-          style: const TextStyle(fontSize: 11, color: Color(0xFF2D3748)),
-          items: const [
-            DropdownMenuItem(value: 'accuracy', child: Text('Accuracy')),
-            DropdownMenuItem(value: 'questions', child: Text('Questions')),
-            DropdownMenuItem(value: 'hours', child: Text('Hours')),
-          ],
-          onChanged: (v) {
-            if (v != null) onChangeSort(v);
-          },
-        ),
-      ],
+  return GestureDetector(
+    onTap: () {
+      // Cycle through sort options
+      final options = ['accuracy', 'questions', 'hours'];
+      final currentIndex = options.indexOf(sortBy);
+      final nextIndex = (currentIndex + 1) % options.length;
+      onChangeSort(options[nextIndex]);
+    },
+    child: Text(
+      sortBy.toUpperCase(),
+      style: const TextStyle(
+        fontSize: 8,
+        color: Color(0xFF2D3748),
+        fontWeight: FontWeight.w600,
+      ),
     ),
   );
 }
@@ -328,16 +321,16 @@ Widget _subjectDetailPanel({required Map<String, dynamic> subject}) {
           // Header metrics
           Row(
             children: [
-              Text(subject['name'], style: const TextStyle(fontWeight: FontWeight.w700)),
-              const SizedBox(width: 12),
-              const Icon(Icons.access_time, size: 14, color: Color(0xFF718096)),
-              Text(' ${subject['hours'].toStringAsFixed(1)} h', style: const TextStyle(fontSize: 12, color: Color(0xFF718096))),
-              const SizedBox(width: 10),
-              const Icon(Icons.quiz, size: 14, color: Color(0xFF718096)),
-              Text(' ${subject['questions']}', style: const TextStyle(fontSize: 12, color: Color(0xFF718096))),
-              const SizedBox(width: 10),
-              const Icon(Icons.speed, size: 14, color: Color(0xFF718096)),
-              Text(' ${subject['qpm'].toStringAsFixed(2)} qpm', style: const TextStyle(fontSize: 12, color: Color(0xFF718096))),
+              Text(subject['name'], style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 10)),
+              const SizedBox(width: 8),
+              const Icon(Icons.access_time, size: 8, color: Color(0xFF718096)),
+              Text(' ${subject['hours'].toStringAsFixed(1)} h', style: const TextStyle(fontSize: 6, color: Color(0xFF718096))),
+              const SizedBox(width: 6),
+              const Icon(Icons.quiz, size: 8, color: Color(0xFF718096)),
+              Text(' ${subject['questions']}', style: const TextStyle(fontSize: 6, color: Color(0xFF718096))),
+              const SizedBox(width: 6),
+              const Icon(Icons.speed, size: 8, color: Color(0xFF718096)),
+              Text(' ${subject['qpm'].toStringAsFixed(2)} qpm', style: const TextStyle(fontSize: 6, color: Color(0xFF718096))),
             ],
           ),
           const SizedBox(height: 10),
@@ -358,7 +351,7 @@ Widget _subjectDetailPanel({required Map<String, dynamic> subject}) {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(t['name'], style: const TextStyle(fontWeight: FontWeight.w600)),
+                    Text(t['name'], style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 10)),
                     const SizedBox(height: 8),
                     Stack(
                       children: [
