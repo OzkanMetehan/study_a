@@ -1,5 +1,6 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:study_a/widgets/searchable_dropdown_field.dart';
+import 'package:study_a/screens/timer/ongoing_session_screen.dart';
 
 class SessionSetupScreen extends StatefulWidget {
   const SessionSetupScreen({super.key});
@@ -32,8 +33,17 @@ class _SessionSetupScreenState extends State<SessionSetupScreen> {
   List<String> get _presets => const ['Preset 1', 'Preset 2', 'Preset 3'];
 
   void _begin() {
-    // For now, just pop to simulate starting
-    Navigator.of(context).pop();
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => OngoingSessionScreen(
+          subject: _subject ?? 'Biology',
+          topic: _topic ?? 'Taxonomy',
+          hours: _hours,
+          minutes: _minutes,
+          isCountdown: _countDown,
+        ),
+      ),
+    );
   }
 
   @override
